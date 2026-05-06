@@ -20,12 +20,19 @@ const movies = [
 function App() {
   const [selectedGenre, setSelectedGenre] = useState("");
   const [moviesByGenre, setMoviesByGenre] = useState(movies);
+  const [searchMovies, setSearchMovies] = useState("");
+
 
   const changeInputHandler = (event) => {
     const target = event.target;
     const targetValue = target.value;
+    const targetName = target.name;
 
-    setSelectedGenre(targetValue);
+    if (targetName === "search") {
+      setSearchMovies(targetValue);
+    } else if (targetName === "genre") {
+      setSelectedGenre(targetValue);
+    };
   };
 
   useEffect(() => {
@@ -34,21 +41,23 @@ function App() {
       setMoviesByGenre(movies);
     } else {
       const moviesFiltered = movies.filter(movie => {
-        return movie.genre === selectedGenre;
+        return ((movie.genre === selectedGenre) && (movie.title.toLowerCase().includes(searchMovies.toLowerCase())));
       });
       setMoviesByGenre(moviesFiltered);
     }
 
-  }, [selectedGenre]);
+  }, [selectedGenre, searchMovies]);
 
   return (
-    <>
+    <div className="container">
+      <h3 className="m-3">Seleziona Genere</h3>
       <select
-        className="form-select"
+        className="form-select m-3"
         value={selectedGenre}
         onChange={changeInputHandler}
+        name="genre"
       >
-        <option value="">Movies</option>
+        <option value="">Film</option>
 
         <option value="Fantascienza">Fantascienza</option>
         <option value="Thriller">Thriller</option>
@@ -57,12 +66,19 @@ function App() {
         <option value="Fantasy">Fantasy</option>
       </select>
 
+      <div className="m-3">
+        <h3>Cerca Film</h3>
+        <input type="text" value={searchMovies}
+          onChange={changeInputHandler}
+          name="search" />
+      </div>
+
       <ul>
         {moviesByGenre.map((movie, index) => { //Giuro che non lo faccio più
           return <li key={index}>{movie.title}</li>
         })}
       </ul>
-    </>
+    </div>
   );
 }
 export default App;
