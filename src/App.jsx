@@ -40,8 +40,8 @@ function App() {
     const moviesFiltered = movies.filter(movie => {
 
       const genreMatch = selectedGenre === "" || movie.genre === selectedGenre;
-      const titleMatch = searchMovies === "" || 
-      movie.title.toLowerCase().includes(searchMovies.toLowerCase());
+      const titleMatch = searchMovies === "" ||
+        movie.title.toLowerCase().includes(searchMovies.toLowerCase());
 
       return genreMatch && titleMatch;
     }
@@ -57,10 +57,8 @@ function App() {
         className="form-select m-3"
         value={selectedGenre}
         onChange={changeInputHandler}
-        name="genre"
-      >
+        name="genre">
         <option value="">Film</option>
-
         <option value="Fantascienza">Fantascienza</option>
         <option value="Thriller">Thriller</option>
         <option value="Romantico">Romantico</option>
@@ -80,7 +78,37 @@ function App() {
           return <li key={index}>{movie.title}</li>
         })}
       </ul>
+      
+      
+      
+      <div className="m-3">
+        <h3>Aggiungi Film</h3>
+        <form>
+          <div className="mb-3">
+            <label htmlFor="movieTitle" className="form-label"> Nome del film </label>
+            <input
+              type="text"
+              className="form-control"
+              id="movieTitle"
+              placeholder="Inserisci il titolo del film"
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="movieGenre" className="form-label"> Genere </label>
+            <select className="form-select" id="movieGenre">
+              <option value="" disabled> Seleziona un genere </option>
+              <option value="Fantascienza">Fantascienza</option>
+              <option value="Thriller"> Thriller </option>
+              <option value="Romantico">Romantico</option>
+              <option value="Azione">Azione</option>
+              <option value="Fantasy">Fantasy</option>
+            </select>
+          </div>
+          <button type="submit" className="btn btn-primary"> Aggiungi Film</button>
+        </form>
+      </div>
     </div>
+
   );
 }
 export default App;
