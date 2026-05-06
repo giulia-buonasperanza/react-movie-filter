@@ -1,4 +1,3 @@
-import { use } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 
@@ -21,6 +20,8 @@ function App() {
   const [selectedGenre, setSelectedGenre] = useState("");
   const [moviesByGenre, setMoviesByGenre] = useState(movies);
   const [searchMovies, setSearchMovies] = useState("");
+  const [newMovie, setNewMovie] = useState({ title: "", genre: "" });
+  const [allMovies, setAllMovies] = useState(movies);
 
 
   const changeInputHandler = (event) => {
@@ -36,8 +37,7 @@ function App() {
   };
 
   useEffect(() => {
-
-    const moviesFiltered = movies.filter(movie => {
+    const moviesFiltered = allMovies.filter(movie => {
 
       const genreMatch = selectedGenre === "" || movie.genre === selectedGenre;
       const titleMatch = searchMovies === "" ||
@@ -50,65 +50,98 @@ function App() {
     setMoviesByGenre(moviesFiltered);
   }, [selectedGenre, searchMovies]);
 
-  return (
-    <div className="container">
-      <h3 className="m-3">Seleziona Genere</h3>
-      <select
-        className="form-select m-3"
-        value={selectedGenre}
-        onChange={changeInputHandler}
-        name="genre">
-        <option value="">Film</option>
-        <option value="Fantascienza">Fantascienza</option>
-        <option value="Thriller">Thriller</option>
-        <option value="Romantico">Romantico</option>
-        <option value="Azione">Azione</option>
-        <option value="Fantasy">Fantasy</option>
-      </select>
 
-      <div className="m-3">
-        <h3>Cerca Film</h3>
-        <input type="text" value={searchMovies}
-          onChange={changeInputHandler}
-          name="search" />
-      </div>
+    const newInputHandler = (event) => {
+      const target = event.target;
+      const targetValue = target.value;
+      const targetName = target.name;
 
-      <ul>
-        {moviesByGenre.map((movie, index) => { //Giuro che non lo faccio più
-          return <li key={index}>{movie.title}</li>
-        })}
-      </ul>
-      
-      
-      
-      <div className="m-3">
-        <h3>Aggiungi Film</h3>
-        <form>
-          <div className="mb-3">
-            <label htmlFor="movieTitle" className="form-label"> Nome del film </label>
-            <input
-              type="text"
-              className="form-control"
-              id="movieTitle"
-              placeholder="Inserisci il titolo del film"
-            />
+      setNewMovie({
+        ...newMovie,
+        [targetName]: targetValue,
+      });
+    };
+
+    const addMovieHandler = (event) => {
+      event.preventDefault();
+
+      const movieToAdd = {
+        title : newMovie.title,
+        genre : newMovie.genre
+      };
+
+      setMoviesByGenre([...movies, movieToAdd]);
+      setAllMovies([...allMovies, movieToAdd]);
+
+      setNewMovie({ title: "", genre: "" });
+
+    };
+
+
+      return (
+        <div className="container">
+          <h3 className="m-3">Seleziona Genere</h3>
+          <select
+            className="form-select m-3"
+            value={selectedGenre}
+            onChange={changeInputHandler}
+            name="genre">
+            <option value="">Film</option>
+            <option value="Fantascienza">Fantascienza</option>
+            <option value="Thriller">Thriller</option>
+            <option value="Romantico">Romantico</option>
+            <option value="Azione">Azione</option>
+            <option value="Fantasy">Fantasy</option>
+          </select>
+
+          <div className="m-3">
+            <h3>Cerca Film</h3>
+            <input type="text" value={searchMovies}
+              onChange={changeInputHandler}
+              name="search" />
           </div>
-          <div className="mb-3">
-            <label htmlFor="movieGenre" className="form-label"> Genere </label>
-            <select className="form-select" id="movieGenre">
-              <option value="" disabled> Seleziona un genere </option>
-              <option value="Fantascienza">Fantascienza</option>
-              <option value="Thriller"> Thriller </option>
-              <option value="Romantico">Romantico</option>
-              <option value="Azione">Azione</option>
-              <option value="Fantasy">Fantasy</option>
-            </select>
-          </div>
-          <button type="submit" className="btn btn-primary"> Aggiungi Film</button>
-        </form>
-      </div>
-    </div>
 
-  );
-}
-export default App;
+          <ul>
+            {moviesByGenre.map((movie, index) => { //Giuro che non lo faccio più
+              return <li key={index}>{movie.title}</li>
+            })}
+          </ul>
+
+          <div className="m-3">
+            <h3>Aggiungi Film</h3>
+            <form onSubmit={addMovieHandler}>
+              <div className="mb-3">
+                <label htmlFor="movieTitle" className="form-label"> Nome del film </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="movieTitle"
+                  placeholder="Inserisci il titolo del film"
+                  value={newMovie.title}
+                  onChange={newInputHandler}
+                  name = "title"
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="movieGenre" className="form-label"> Genere </label>
+                <select className="form-select"
+                  id="movieGenre"
+                  value={newMovie.genre}
+                  onChange={newInputHandler}
+                  name="genre">
+                  <option value="" disabled> Seleziona un genere </option>
+                  <option value="Fantascienza">Fantascienza</option>
+                  <option value="Thriller"> Thriller </option>
+                  <option value="Romantico">Romantico</option>
+                  <option value="Azione">Azione</option>
+                  <option value="Fantasy">Fantasy</option>
+                </select>
+              </div>
+              <button type="submit" className="btn btn-primary"> Aggiungi Film</button>
+            </form>
+          </div>
+        </div>
+
+      );
+    }
+    export default App;
