@@ -37,15 +37,17 @@ function App() {
 
   useEffect(() => {
 
-    if (selectedGenre === "") {
-      setMoviesByGenre(movies);
-    } else {
-      const moviesFiltered = movies.filter(movie => {
-        return ((movie.genre === selectedGenre) && (movie.title.toLowerCase().includes(searchMovies.toLowerCase())));
-      });
-      setMoviesByGenre(moviesFiltered);
-    }
+    const moviesFiltered = movies.filter(movie => {
 
+      const genreMatch = selectedGenre === "" || movie.genre === selectedGenre;
+      const titleMatch = searchMovies === "" || 
+      movie.title.toLowerCase().includes(searchMovies.toLowerCase());
+
+      return genreMatch && titleMatch;
+    }
+    );
+
+    setMoviesByGenre(moviesFiltered);
   }, [selectedGenre, searchMovies]);
 
   return (
