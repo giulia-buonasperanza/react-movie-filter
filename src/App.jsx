@@ -1,3 +1,4 @@
+import { use } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 
@@ -18,22 +19,36 @@ const movies = [
 
 function App() {
   const [selectedGenre, setSelectedGenre] = useState("");
+  const [moviesByGenre, setMoviesByGenre] = useState(movies);
 
   const changeInputHandler = (event) => {
     const target = event.target;
     const targetValue = target.value;
 
     setSelectedGenre(targetValue);
-  }
+  };
+
+  useEffect(() => {
+
+    if (selectedGenre === "") {
+      setMoviesByGenre(movies);
+    } else {
+      const moviesFiltered = movies.filter(movie => {
+        return movie.genre === selectedGenre;
+      });
+      setMoviesByGenre(moviesFiltered);
+    }
+
+  }, [selectedGenre]);
 
   return (
     <>
       <select
         className="form-select"
-        value= {selectedGenre}
+        value={selectedGenre}
         onChange={changeInputHandler}
       >
-        <option value="" disabled>Scegli il genere</option>
+        <option value="">Movies</option>
 
         <option value="Fantascienza">Fantascienza</option>
         <option value="Thriller">Thriller</option>
@@ -41,6 +56,12 @@ function App() {
         <option value="Azione">Azione</option>
         <option value="Fantasy">Fantasy</option>
       </select>
+
+      <ul>
+        {moviesByGenre.map((movie, index) => { //Giuro che non lo faccio più
+          return <li key={index}>{movie.title}</li>
+        })}
+      </ul>
     </>
   );
 }
